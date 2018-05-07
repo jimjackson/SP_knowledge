@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update>
+    <sys_documentation element="event_contact" label="Event Contact" language="en" table="x_snc_cloudevents_events">
+        <sys_documentation action="INSERT_OR_UPDATE">
+            <element>event_contact</element>
+            <help/>
+            <hint/>
+            <label>Event Contact</label>
+            <language>en</language>
+            <name>x_snc_cloudevents_events</name>
+            <plural>Event Contacts</plural>
+            <sys_class_name>sys_documentation</sys_class_name>
+            <sys_created_by>admin</sys_created_by>
+            <sys_created_on>2018-05-07 22:00:03</sys_created_on>
+            <sys_id>f7af65b7787913007f4458e3ac1660fb</sys_id>
+            <sys_mod_count>0</sys_mod_count>
+            <sys_name>Event Contact</sys_name>
+            <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+            <sys_policy/>
+            <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+            <sys_update_name>sys_documentation_x_snc_cloudevents_events_event_contact_en</sys_update_name>
+            <sys_updated_by>admin</sys_updated_by>
+            <sys_updated_on>2018-05-07 22:00:03</sys_updated_on>
+            <url/>
+            <url_target/>
+        </sys_documentation>
+    </sys_documentation>
+</record_update>

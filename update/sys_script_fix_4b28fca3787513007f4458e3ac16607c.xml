@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sys_script_fix">
+    <sys_script_fix action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <before>false</before>
+        <description/>
+        <flush_cache>false</flush_cache>
+        <name>t1</name>
+        <run_once>true</run_once>
+        <script><![CDATA[	data.records = [];
+	var gr = new GlideRecord (input.table);
+	gr.addQuery(input.groupBy, input.selectedAg);
+	gr.query();
+		
+	
+	data.labels= $sp.getFieldsObject(gr,input.fields);
+		
+	while(gr.next()){
+			
+			var o = {};
+			$sp.getRecordDisplayValues(o,gr,input.fields);
+			$sp.getRecordValues(o,gr,'sys_id');
+			data.records.push(o);
+			
+			 
+	}]]></script>
+        <sys_class_name>sys_script_fix</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-05-06 23:20:19</sys_created_on>
+        <sys_id>4b28fca3787513007f4458e3ac16607c</sys_id>
+        <sys_mod_count>0</sys_mod_count>
+        <sys_name>t1</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sys_script_fix_4b28fca3787513007f4458e3ac16607c</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-05-06 23:20:19</sys_updated_on>
+        <unloadable>false</unloadable>
+    </sys_script_fix>
+</record_update>

@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function($timeout,spUtil,$scope,$uibModal,spModal,$http) {
+  /* widget controller */
+  var c = this;
+	
+	c.selectAg = function(record){
+		c.data.selectAg = record.agValue;
+		c.server.update();
+		
+		var crumb = _.find(c.breadcumbArray, {type:'table_summary.aggregate'});
+		if(crumb){
+			crumb.label = record.agName
+		}
+		else{
+			c.breadcumbArray.push({
+				label:record.agName,
+				type: 'table_summary.aggregate'
+			});
+		}
+		
+		
+	}
+	
+	c.sortOrder = false;
+	
+	c.changeSortCol=function(key){
+		if(key == c.orderCol){
+			c.sortOrder = !c.sortOrder;
+		}
+		else{
+			c.sortOrder = false;
+			c.orderCol = key;
+		}
+	}
+	
+	c.updateFromServer = false;
+	
+	spUtil.recordWatch($scope, c.data.table, '', function(updateObj){
+	spUtil.update($scope);
+	c.updatedFromServer = true;
+	if (!c.updatedRegs) {
+		c.updatedRegs = {}
+	}
+		
+	//add sys_ids of any changed records to an array
+	//this will allow us to highlight them in the HTML template
+	c.updatedRegs[changeObj.data.sys_id] = true;
+	$timeout(function(){
+		c.updatedRegs[changeObj.data.sys_id] = false;
+	},6000);
+	
+	//spUtil.recordWatch($Scope, c.data.table, '', function(updateObj){
+	//	spUtil.update($scope);
+	//	c.updateFromServer = true;
+	//	if(!c.updatedRegs){
+	//		c.updatedRegs = {};
+	//	}
+		
+	//	c.updatedRegs [changeObj.data.sys_id] = true;
+	//	$timeout(function(){
+	//			c.updatedRegs [changeObj.data.sys_id] = false;}, 6000);
+	
+		});
+		
+		c.openRecord = function(record){
+			c.modalInstance = $uibModal.open({
+			templateUrl: 'table-summary-overlay.html',
+			controllerAs:'modalC',
+			controller: function(){
+			var modalC = this;
+			modalC.record = record;
+			modalC.modalInstance = c.modalInstance;
+				
+				spUtil.get('widget-form', {
+					sys_id: modalC.record.sys_id,
+					table: c.data.table}).then(function(response){
+					modalC.form = response;})
+	
+				
+		}
+		
+		})
+	}
+	
+		c.breadcumbArray = [
+		{
+			url:'/clodevents',
+			label:'Cloud Events'
+		},
+		{
+			url: '?id=cde_management',
+			label:'Manage'
+		}
+		];
+	
+	$scope.$emit('sp.ipdate.bradcrumbs', c.breadcumbArray);
+	
+
+	c.deleteRecord = function(record){
+		
+		spModel.confirm("Are you sure you want to delete this record?")
+			.then(function successCallback(answer){
+				$http({
+					method: 'DELETE',
+					url: 'api/now/table/'+c.data.table+'/'+record.sys_id
+				}).then(function successfullCallback(response){
+					spUtil.addInfoMessage('Record deleted');
+				})
+				}, function errorCallback(response){
+					spUtil.addinfoMessage('The record e]=was not deleted')
+				})
+	}
+}]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.badge{background: red};
+
+.highlight{
+  background-color: blue;
+  color: white;
+}
+
+.customClass .tooltip-inner{
+  color: white;
+  background-color: red;
+}</css>
+        <data_table>sp_instance_table</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list>table</field_list>
+        <has_preview>true</has_preview>
+        <id>table-summary</id>
+        <internal>false</internal>
+        <link><![CDATA[function(){
+	$('.list-group').on("click",".list-group-item",function(){
+		$('.list-group').find('li.highlight').removeClass('highlight');
+		$(this).addClass('highlight');
+											});
+	
+}
+
+]]></link>
+        <name>Table Summary</name>
+        <option_schema>[{"name":"aggregate_field","section":"Data","label":"Aggregate field","type":"field_name"},{"name":"title","section":"Presentation","label":"Title","type":"string"},{"name":"display_fields","section":"Presentation","label":"Display fields","type":"field_list"}]</option_schema>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+	
+	if(input)
+	{
+	
+		//$sp.log('input boom AG:' +input.selectAg);
+		data.records = [];
+		var gr = new GlideRecord (input.table);
+		gr.addQuery(input.groupBy, input.selectAg);
+		gr.query();
+		
+		data.labels= $sp.getFieldsObject(gr,input.fields);
+		
+		while(gr.next()){
+			
+			var o = {};
+			$sp.getRecordDisplayValues(o,gr,input.fields);
+			$sp.getRecordValues(o,gr,'sys_id');
+			data.records.push(o);
+			
+		}
+}
+		
+  
+	if(!input) {
+		data.summary = [];
+	  data.table = input && input.table || $sp.getParameter('table') || options.table || 'incident';
+	  data.groupBy = input && input.groupBy || $sp.getParameter('groupBy') || options.aggregate_field || 'category';
+		data.fields = input && input.fields || $sp.getParameter('fields') || options.display_fields || 'number, short_description, sys_updated_on';
+	
+		$sp.log("table: "+data.table);
+		$sp.log("groupdBy: "+data.groupdBy);
+		$sp.log("fields: "+data.fields);
+	
+		
+	  var ga = new GlideAggregate(data.table);
+	  ga.setGroup(true);
+	  ga.groupBy(data.groupBy);
+	  ga.addAggregate('COUNT');
+	  ga.query();
+		
+		while(ga.next()){
+			data.summary.push({
+				agName:ga[data.groupBy].getDisplayValue()  || 'None',
+				agValue:ga[data.groupBy].toString(),
+			  agCount:ga.getAggregate('COUNT')
+			});
+		}
+		
+	}
+	
+	
+})();]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-05-06 20:59:59</sys_created_on>
+        <sys_id>d25858eb783513007f4458e3ac166043</sys_id>
+        <sys_mod_count>100</sys_mod_count>
+        <sys_name>Table Summary</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_widget_d25858eb783513007f4458e3ac166043</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-05-07 22:33:08</sys_updated_on>
+        <template><![CDATA[<form>
+  <div class="panel panel-default">
+  <!-- Default panel contents -->
+  <span class = "fa fa-bolt" ng-show="c.updatedFromServer" 
+         uib-tooltip="Updated from Server" tooltip-class="customClass"></span>
+  <div class="panel-heading">{{options.title}}</div>
+ 
+  <!-- List group -->
+  <ul class="list-group">
+    <li class="list-group-item"
+        ng-repeat= "s in c.data.summary"
+        	ng-click="c.selectAg(s)">{{s.agName}}
+      		<span class="badge"> {{s.agCount}}</span>
+    </li>
+  </ul>
+</div>
+  
+  <table class="table" 
+         ng-if = "c.data.records">
+	<thead>
+        
+		<tr>
+			<th ng-repeat="(key,val) in c.data.labels"
+          ng-click="c.changeSortCol(key)">{{val.label}}</th>
+     
+      <!-- Only show and style the selected column -->
+			<span ng-show="c.orderCol==key">
+			<span class="fa fa-sort-asc"
+				ng-show="!c.sortOrder"></span>
+			<span class="fa fa-sort-desc"
+				ng-show="c.sortOrder"></span>
+			</span>
+      
+      <th></th>
+
+		</tr>
+	</thead>
+
+	<tbody>
+      		<tr ng-repeat="record in c.data.records | orderBy : c.orderCol : c.sortOrder">
+        	<td ng-repeat="(key,val) in c.data.labels" >
+            <sp-time-ago date="record[key]"
+                         ng-if="val.type=='glide_date_time'"></sp-time-ago>
+            <span ng-if="val.type!='glide_date_time'">
+            {{record[key]}}</span>
+            </td>
+            <td>
+              <span class="fa fa-info-circle"
+                    ng-click="c.openRecord(record)"></span>
+            
+            </td>
+            <td>
+            <span class="fa fa-trash"
+                  ng-click="c.deleteRecord(record)"></span>
+            </td>
+      		</tr>
+    	</tbody>
+</table>
+
+</form>]]></template>
+    </sp_widget>
+</record_update>

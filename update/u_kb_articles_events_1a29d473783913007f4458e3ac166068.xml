@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="u_kb_articles_events">
+    <u_kb_articles_events action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <glyph/>
+        <id/>
+        <order>1</order>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="2">20385833783913007f4458e3ac1660e5</sp_column>
+        <sp_widget/>
+        <sys_class_name>u_kb_articles_events</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-05-07 15:42:01</sys_created_on>
+        <sys_id>1a29d473783913007f4458e3ac166068</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name/>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>u_kb_articles_events_1a29d473783913007f4458e3ac166068</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-05-07 15:42:27</sys_updated_on>
+        <title/>
+        <u_kb_articles display_value="KB0010001">c2f25c6f713a03007f440126d3d01274</u_kb_articles>
+        <url/>
+        <widget_parameters/>
+    </u_kb_articles_events>
+    <sys_translated_text action="delete_multiple" query="documentkey=1a29d473783913007f4458e3ac166068"/>
+</record_update>

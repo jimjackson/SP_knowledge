@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>spEventPubsub</name>
+        <script><![CDATA[function spEventPubSub($rootScope){
+	var changedEvent = 'event_form.event_changed';
+	
+	function _publish(eventName, data) {
+		$rootScope.$emit(eventName, data);
+	}
+	
+	function _subscribe(eventNmame, callback){
+		$rootScope.$on(eventName, callback);
+	}
+	
+	return {
+		notifyEventChange: function(data){
+			_publish(changedEvent, data); },
+		onEventChange: function(callback) {
+			_subscribe(changedEvent, callback);}
+		};
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-05-07 21:13:29</sys_created_on>
+        <sys_id>b18329f3787913007f4458e3ac1660ad</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>spEventPubsub</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_angular_provider_b18329f3787913007f4458e3ac1660ad</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-05-07 21:15:11</sys_updated_on>
+        <type>service</type>
+    </sp_angular_provider>
+</record_update>

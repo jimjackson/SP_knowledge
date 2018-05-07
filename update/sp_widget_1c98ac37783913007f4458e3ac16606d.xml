@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[function(spUserAvatar) {
+   /* widget controller */
+   var c = this;
+
+   /* Step 3. Accept user input */
+	
+	c.saveTags = function(event){
+//		c.server.get({
+//			tags:event.tags,
+//			sys_id: event.sys_id.value
+//		}).then(function(rsp){
+//						c.data.msg=rsp.data.msg;
+//						c.data.state=rsp.data.state;
+						
+	//		})
+	}
+	
+//	_.each(c.data.events, function(ev){
+//		var avatar =m spUserAvatar.getAvatar(ev.presenter.value).then(function(rsp){
+///			ev.avatar=rsp;
+//		});
+//	});
+	
+	spEventPubSub.onEventChanged(function($event, data){
+		var selectedEvent = _.find(c.data.events, function(input){
+			return input.sys_id.value == data.sys_id;
+		})
+		selectedEvent.active = true;
+	});
+	
+}	]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.margin-bottom-10{
+  margin-bottom: 1-px;
+}
+</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>event_information</id>
+        <internal>false</internal>
+        <link/>
+        <name>Event Information</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+
+	/* Step 1. Load initial data from the server */
+			/* populate the 'data' object */
+			/* e.g., data.table = $sp.getValue('table'); */
+
+if(!input) {
+	var fields = 'sys_id, name,description,start_date,end_date,certification,certification_name,location,presenter';
+
+	data.events=[];
+
+	//Define fields to return from GR
+	var gr = new GlideRecord('x_snc_cloudevents_events');
+	gr.addActiveQuery();
+	gr.query();
+
+	while (gr.next()) {
+		
+		$sp.log('boom');
+			var o = $sp.getFieldsObject(gr,fields);
+		$sp.log('boom2');
+			o.tags = gr.tags.toString().split(',');
+			data.events.push(o);
+		$sp.log('boom3: '+o);
+		
+	}	
+		
+	}
+
+	/* Step 4. Process user input */
+	
+	if(input) {
+		
+	//Define fields to return from GR
+		var updaterTags  = new GlideRecord('x_snc_cloudevents_events');
+		updaterTags.get(input.sys_id);
+		updaterTags.tags = input.tags.join(',');
+	
+		var result=updateTags.update();
+		
+		if(result){
+			date.msg= 'Tags saved';
+			data.state = 'sucess';
+		}
+
+		
+	}
+
+})();	
+
+	
+]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2018-05-07 16:49:20</sys_created_on>
+        <sys_id>1c98ac37783913007f4458e3ac16606d</sys_id>
+        <sys_mod_count>33</sys_mod_count>
+        <sys_name>Event Information</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_widget_1c98ac37783913007f4458e3ac16606d</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2018-05-07 21:23:11</sys_updated_on>
+        <template><![CDATA[<form>
+ 
+  <uib.tabset class="cloud-widgets">
+  	<legend>Event Details</legend>
+  
+  	<uib-tab heading="{{event.name.display_value}}"
+           ng-repeat="event in c.data.events">
+      
+     <div class="margin-bottom-10"></div>
+  
+      <dl ng-repeat="(key,val) in event"
+      	ng-if="key != 'sys_id && val.label.length & val.display_value.length">
+    		<dt>{{val.label}}</dt>
+    		<dd>{{val.display_value}}</dd>
+  		</dl>
+   
+  
+
+
+   </uib-tab>
+ </uib.tabset> 
+  
+</form>
+	
+]]></template>
+    </sp_widget>
+</record_update>
